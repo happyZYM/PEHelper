@@ -19,10 +19,10 @@ class AboutDialog(QDialog):
 
     layout = QVBoxLayout()
 
-    text_label = QLabel("This is a sample program using PyQt6.\nVisit the repository:")
+    text_label = QLabel("This is a program designed for basic physics experiment data analysis, written by happyZYM.\nVisit the repository:")
     layout.addWidget(text_label)
 
-    link_label = QLabel('<a href="https://github.com/your_repo">https://github.com/your_repo</a>')
+    link_label = QLabel('<a href="https://dev.zymsite.ink/Academic/PEHelper">https://dev.zymsite.ink/Academic/PEHelper</a>')
     link_label.setOpenExternalLinks(True)
     layout.addWidget(link_label)
 
@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
   def __init__(self):
     super().__init__()
 
-    self.setWindowTitle("Uncertainty Analysis Tool")
+    self.setWindowTitle("PEHelper - Physics Experiment Helper")
     self.setGeometry(100, 100, 800, 600)
 
     menubar = self.menuBar()
