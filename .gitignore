@@ -1,3 +1,6 @@
 *.spec
 build/
 dist/
+dev/
+__pycache__/
+*.pe
