@@ -1,15 +1,19 @@
-import sys
+import sys, os
 import pickle
 import copy
 from math import pi
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QMenu
-from PyQt6.QtGui import QAction
+from PyQt6.QtGui import QAction,QIcon
 from PyQt6.QtWidgets import QMessageBox
 from PyQt6.QtWidgets import QListWidget, QListWidgetItem, QAbstractItemView
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMenuBar, QMenu, QTabWidget, QVBoxLayout, QWidget, QLabel, QLineEdit, QTextEdit, QPushButton, QDialog, QHBoxLayout, QFileDialog
 from uncertaintytrack import TrackUncertainty  # Make sure to import your TrackUncertainty module
 
+if getattr(sys, 'frozen', None):
+    basedir = sys._MEIPASS
+else:
+    basedir = os.path.dirname(__file__)
 class AboutDialog(QDialog):
   def __init__(self):
     super().__init__()
@@ -35,6 +39,7 @@ class MainWindow(QMainWindow):
     super().__init__()
 
     self.setWindowTitle("PEHelper - Physics Experiment Helper")
+    self.setWindowIcon(QIcon(os.path.join(basedir,"static/icon.ico")))
     self.setGeometry(100, 100, 800, 600)
 
     menubar = self.menuBar()
