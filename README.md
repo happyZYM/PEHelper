@@ -10,6 +10,12 @@
 
 # 使用方法
 ![pic](https://cloud.zymsite.ink/f/mB4cK/example.gif)
+## 下载
+### Windows端
+在<https://github.com/happyZYM/PEHelper/releases/>页面下载对应版本的`PEHelper.zip`，解压后即可使用
+### 其他平台
+在<https://github.com/happyZYM/PEHelper/releases/>页面下载对应版本的源码，安装`PyQt6`、`SymPy`、`Scipy`、`mpmath`等依赖项即可使用
+
 ## 文件操作
 - 打开：菜单栏 File->Open，或Ctrl+O
 - 保存：菜单栏 File->Save，或Ctrl+S
