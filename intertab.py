@@ -1,4 +1,4 @@
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QEvent
 from PyQt6.QtWidgets import QMenu
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QMessageBox
@@ -6,16 +6,19 @@ from PyQt6.QtWidgets import QListWidget, QListWidgetItem, QAbstractItemView
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMenuBar, QMenu, QTabWidget, QVBoxLayout, QWidget, QLabel, QLineEdit, QTextEdit, QPushButton, QDialog, QHBoxLayout, QFileDialog
 
 class IntermediateVariableWidget(QWidget):
-  def __init__(self, name, expr):
+  def __init__(self, name, expr, parent):
     super().__init__()
+    self.parent_reference = parent
 
     self.layout = QHBoxLayout()
 
     self.name_label = QLabel("Name:")
     self.name_input = QLineEdit(name)
+    self.name_input.textChanged.connect(self.parent_reference.parent_reference.update_window_title)
     self.name_input.setFixedWidth(100)  # Set a fixed width for the name field
     self.equal_label = QLabel("=")
     self.expr_input = QLineEdit(expr)
+    self.expr_input.textChanged.connect(self.parent_reference.parent_reference.update_window_title)
 
     self.layout.addWidget(self.name_label)
     self.layout.addWidget(self.name_input)
@@ -30,14 +33,21 @@ class IntermediateVariableWidget(QWidget):
   def get_expr(self):
     return self.expr_input.text()
 
-
+class DragDropListWidget(QListWidget):
+  def dropEvent(self, event):
+    super().dropEvent(event)
+    self.parent().track_order()
 class IntermediateVariablesTab(QWidget):
+  def track_order(self):
+    print("track_order")
+    self.parent_reference.update_window_title()
   def __init__(self, parent, _data):
     super().__init__(parent)
+    self.parent_reference = parent
 
     self.layout = QVBoxLayout()
 
-    self.intermediate_list = QListWidget()
+    self.intermediate_list = DragDropListWidget()
     self.intermediate_list.setDragDropMode(QListWidget.DragDropMode.InternalMove)
     self.intermediate_list.setDefaultDropAction(Qt.DropAction.MoveAction)
     self.intermediate_list.setSortingEnabled(True)
@@ -60,7 +70,7 @@ class IntermediateVariablesTab(QWidget):
     for i in range(len(self.data["intermediate_vars"])):
       var=self.data["intermediate_vars"][-i-1]
       item = QListWidgetItem(self.intermediate_list)
-      widget = IntermediateVariableWidget(var["name"], var["expr"])
+      widget = IntermediateVariableWidget(var["name"], var["expr"], self)
       item.setSizeHint(widget.sizeHint())
       self.intermediate_list.setItemWidget(item, widget)
 
@@ -75,9 +85,10 @@ class IntermediateVariablesTab(QWidget):
   def add_intermediate_variable(self):
     # Add an intermediate variable to the end of the list
     item = QListWidgetItem(self.intermediate_list)
-    widget = IntermediateVariableWidget("NewVar", "expr")
+    widget = IntermediateVariableWidget("NewVar", "expr", self)
     item.setSizeHint(widget.sizeHint())
     self.intermediate_list.setItemWidget(item, widget)
+    self.parent_reference.update_window_title()
 
   def contextMenuEvent(self, event):
     # Context menu for right-clicking on an item
@@ -98,3 +109,4 @@ class IntermediateVariablesTab(QWidget):
 
     # Update the data after deleting an item
     self.update_data_from_list()
+    self.parent_reference.update_window_title()
