@@ -4,3 +4,4 @@ dist/
 dev/
 __pycache__/
 *.pe
+static/example.mp4
