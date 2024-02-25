@@ -91,14 +91,17 @@ class IntermediateVariablesTab(QWidget):
     self.parent_reference.update_window_title()
 
   def contextMenuEvent(self, event):
-    # Context menu for right-clicking on an item
-    context_menu = QMenu(self)
+    # Check if an item is right-clicked
+    item = self.intermediate_list.itemAt(event.pos())
+    if item:
+      # Context menu for right-clicking on an item
+      context_menu = QMenu(self)
 
-    delete_action = QAction("Delete", self)
-    delete_action.triggered.connect(self.delete_selected_item)
-    context_menu.addAction(delete_action)
+      delete_action = QAction("Delete", self)
+      delete_action.triggered.connect(self.delete_selected_item)
+      context_menu.addAction(delete_action)
 
-    context_menu.exec(event.globalPos())
+      context_menu.exec(event.globalPos())
 
   def delete_selected_item(self):
     # Delete the selected item from the list

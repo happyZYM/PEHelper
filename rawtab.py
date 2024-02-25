@@ -316,15 +316,16 @@ class RawVariablesTab(QWidget):
     # Make custom Item and selected Item always the same
     self.variable_list.clearSelection()
     item = self.variable_list.itemAt(position)
-    item.setSelected(True)
-    menu = QMenu(self)
-    delete_action = QAction("Delete", self)
-    delete_action.triggered.connect(self.delete_selected_variables)
-    menu.addAction(delete_action)
-    change_name_action = QAction("Edit Name", self)
-    change_name_action.triggered.connect(lambda: self.edit_variable_name(self.variable_list.currentItem()))
-    menu.addAction(change_name_action)
-    menu.exec(self.variable_list.mapToGlobal(position))
+    if item:
+      item.setSelected(True)
+      menu = QMenu(self)
+      delete_action = QAction("Delete", self)
+      delete_action.triggered.connect(self.delete_selected_variables)
+      menu.addAction(delete_action)
+      change_name_action = QAction("Edit Name", self)
+      change_name_action.triggered.connect(lambda: self.edit_variable_name(self.variable_list.currentItem()))
+      menu.addAction(change_name_action)
+      menu.exec(self.variable_list.mapToGlobal(position))
 
   def delete_selected_variables(self):
     selected_items = self.variable_list.selectedItems()
@@ -373,14 +374,17 @@ class RawVariablesTab(QWidget):
           self.parent_reference.update_window_title()
 
   def show_data_context_menu(self, position):
-    menu = QMenu(self)
-    delete_action = QAction("Delete", self)
-    delete_action.triggered.connect(self.delete_selected_data_points)
-    menu.addAction(delete_action)
-    edit_action = QAction("Edit", self)
-    edit_action.triggered.connect(self.edit_selected_data_point)
-    menu.addAction(edit_action)
-    menu.exec(self.data_list.mapToGlobal(position))
+    # check if an item is right-clicked
+    item = self.data_list.itemAt(position)
+    if item:
+      menu = QMenu(self)
+      delete_action = QAction("Delete", self)
+      delete_action.triggered.connect(self.delete_selected_data_points)
+      menu.addAction(delete_action)
+      edit_action = QAction("Edit", self)
+      edit_action.triggered.connect(self.edit_selected_data_point)
+      menu.addAction(edit_action)
+      menu.exec(self.data_list.mapToGlobal(position))
   def edit_selected_data_point(self):
     current_item = self.variable_list.currentItem()
     if current_item:
