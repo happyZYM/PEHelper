@@ -50,7 +50,7 @@ class IntermediateVariablesTab(QWidget):
     self.intermediate_list = DragDropListWidget()
     self.intermediate_list.setDragDropMode(QListWidget.DragDropMode.InternalMove)
     self.intermediate_list.setDefaultDropAction(Qt.DropAction.MoveAction)
-    self.intermediate_list.setSortingEnabled(True)
+    self.intermediate_list.setSortingEnabled(False)
 
     self.setup_list(_data)
     self.layout.addWidget(self.intermediate_list)
@@ -68,7 +68,7 @@ class IntermediateVariablesTab(QWidget):
     # Add your logic to create items in the list based on self.data["intermediate_vars"]
     self.data=_data
     for i in range(len(self.data["intermediate_vars"])):
-      var=self.data["intermediate_vars"][-i-1]
+      var=self.data["intermediate_vars"][i]
       item = QListWidgetItem(self.intermediate_list)
       widget = IntermediateVariableWidget(var["name"], var["expr"], self)
       item.setSizeHint(widget.sizeHint())
