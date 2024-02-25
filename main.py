@@ -46,8 +46,11 @@ class MainWindow(QMainWindow):
     
     file_menu = menubar.addMenu("File")
     open_action = file_menu.addAction("Open", self.open_file)
+    open_action.setShortcut("Ctrl+O")
     save_action = file_menu.addAction("Save", self.save_file)
+    save_action.setShortcut("Ctrl+S")
     save_as_action = file_menu.addAction("Save As", self.save_as_file)
+    save_as_action.setShortcut("Ctrl+Shift+S")
 
     about_action = menubar.addAction("About", self.show_about_dialog)
 
@@ -220,7 +223,21 @@ class MainWindow(QMainWindow):
   def show_about_dialog(self):
     about_dialog = AboutDialog()
     about_dialog.exec()
+  def closeEvent(self, event):
+    self.FetchInfoFromUI()
+    if self.data != self.data_backup:
+      reply = QMessageBox.question(
+        self, 'Save Work', 'Do you want to save your current work before closing?',
+        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No | QMessageBox.StandardButton.Cancel
+      )
+      if reply == QMessageBox.StandardButton.Yes:
+        self.save_file()
+      elif reply == QMessageBox.StandardButton.Cancel:
+        event.ignore()
+        return
 
+    # 调用父类的 closeEvent 方法
+    super().closeEvent(event)
 def main():
   app = QApplication(sys.argv)
   try:
