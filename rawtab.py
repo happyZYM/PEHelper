@@ -11,22 +11,31 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QMenuBar, QMenu, QTabWidg
 class RawVariablesTab(QWidget):
   def write_data_full_value(self, text):
     self.data["independent_vars"][self.variable_list.currentItem().text()]["var"]=text
+    self.parent_reference.update_window_title()
   def write_data_full_uncertainty(self, text):
     self.data["independent_vars"][self.variable_list.currentItem().text()]["uncertainty"]=text
+    self.parent_reference.update_window_title()
   def write_data_single_value(self, text):
     self.data["independent_vars"][self.variable_list.currentItem().text()]["var"]=text
+    self.parent_reference.update_window_title()
   def write_data_single_tolerance(self, text):
     self.data["independent_vars"][self.variable_list.currentItem().text()]["tolerance"]=text
+    self.parent_reference.update_window_title()
   def write_data_single_scale(self, text):
     self.data["independent_vars"][self.variable_list.currentItem().text()]["scale"]=text
+    self.parent_reference.update_window_title()
   def write_data_single_system_error(self, text):
     self.data["independent_vars"][self.variable_list.currentItem().text()]["system_error"]=text
+    self.parent_reference.update_window_title()
   def write_data_muiltiple_tolerance(self, text):
     self.data["independent_vars"][self.variable_list.currentItem().text()]["tolerance"]=text
+    self.parent_reference.update_window_title()
   def write_data_muiltiple_scale(self, text):
     self.data["independent_vars"][self.variable_list.currentItem().text()]["scale"]=text
+    self.parent_reference.update_window_title()
   def write_data_muiltiple_system_error(self, text):
     self.data["independent_vars"][self.variable_list.currentItem().text()]["system_error"]=text
+    self.parent_reference.update_window_title()
   def __init__(self, parent, data):
     super().__init__(parent)
     self.parent_reference = parent
@@ -332,6 +341,7 @@ class RawVariablesTab(QWidget):
           # Update the data list
           item = QListWidgetItem(f"{new_data_point}")
           self.data_list.addItem(item)
+          self.parent_reference.update_window_title()
 
   def show_data_context_menu(self, position):
     menu = QMenu(self)
@@ -354,5 +364,6 @@ class RawVariablesTab(QWidget):
           # Remove the data point from the list
           row = self.data_list.row(item)
           self.data_list.takeItem(row)
+          self.parent_reference.update_window_title()
   def FlushData():
     pass
