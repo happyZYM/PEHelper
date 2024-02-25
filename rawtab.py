@@ -29,7 +29,7 @@ class RawVariablesTab(QWidget):
     self.data["independent_vars"][self.variable_list.currentItem().text()]["system_error"]=text
   def __init__(self, parent, data):
     super().__init__(parent)
-
+    self.parent_reference = parent
     self.data = data
     # Variable List
     self.variable_list = QListWidget(self)
@@ -174,7 +174,7 @@ class RawVariablesTab(QWidget):
     current_item = self.variable_list.currentItem()
     if current_item:
       variable_name = current_item.text()
-      print(variable_name)
+      print("current name=", variable_name)
       variable_data = self.data["independent_vars"].get(variable_name, {})
       new_type = self.variable_type_combobox.currentText().lower()
       print("new type is", new_type)
@@ -187,6 +187,7 @@ class RawVariablesTab(QWidget):
 
       # Update the right panel based on the new variable type
       if actually_changed:
+        self.parent_reference.update_window_title()
         if new_type == "full":
           variable_data["var"] = 0
           variable_data["uncertainty"] = 0
@@ -275,6 +276,7 @@ class RawVariablesTab(QWidget):
       self.variable_list.setCurrentItem(item)
       # Show the details of the new variable
       self.show_variable_details(item)
+      self.parent_reference.update_window_title()
 
   def edit_variable_name(self, item):
     variable_name, ok = QInputDialog.getText(self, "Edit Variable Name", "Enter Variable Name:", text=item.text())
@@ -285,6 +287,7 @@ class RawVariablesTab(QWidget):
       self.data["independent_vars"][variable_name] = variable_data
       # Update the variable list
       item.setText(variable_name)
+      self.parent_reference.update_window_title()
 
   def show_context_menu(self, position):
     # Make custom Item and selected Item always the same
@@ -309,10 +312,12 @@ class RawVariablesTab(QWidget):
       # Remove the variable from the list
       row = self.variable_list.row(item)
       self.variable_list.takeItem(row)
+      self.variable_list.setCurrentItem(None)
       # Clear the right panel if the deleted variable was being displayed
       self.right_panel_info.setCurrentIndex(0)
       self.variable_type_combobox.setEnabled(False)
       self.variable_type_combobox.setCurrentIndex(-1)
+      self.parent_reference.update_window_title()
 
   def add_data_to_multiple_var(self):
     current_item = self.variable_list.currentItem()
