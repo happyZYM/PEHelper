@@ -348,8 +348,27 @@ class RawVariablesTab(QWidget):
     delete_action = QAction("Delete", self)
     delete_action.triggered.connect(self.delete_selected_data_points)
     menu.addAction(delete_action)
+    edit_action = QAction("Edit", self)
+    edit_action.triggered.connect(self.edit_selected_data_point)
+    menu.addAction(edit_action)
     menu.exec(self.data_list.mapToGlobal(position))
-
+  def edit_selected_data_point(self):
+    current_item = self.variable_list.currentItem()
+    if current_item:
+      variable_name = current_item.text()
+      variable_data = self.data["independent_vars"].get(variable_name, {})
+      if variable_data.get("type") == "multiple":
+        selected_items = self.data_list.selectedItems()
+        for item in selected_items:
+          data_point = item.text()
+          new_data_point, ok = QInputDialog.getText(self, "Edit Data", "Enter Data Point:", text=data_point)
+          if ok:
+            # Update the data point in the data
+            index = self.data_list.row(item)
+            variable_data["var"][index] = new_data_point
+            # Update the data point in the list
+            item.setText(new_data_point)
+            self.parent_reference.update_window_title()
   def delete_selected_data_points(self):
     current_item = self.variable_list.currentItem()
     if current_item:
@@ -360,10 +379,9 @@ class RawVariablesTab(QWidget):
         for item in selected_items:
           data_point = item.text()
           # Remove the data point from the data
-          variable_data["var"].remove(data_point)
+          accurate_index=self.data_list.row(item)
+          variable_data["var"].pop(accurate_index)
           # Remove the data point from the list
           row = self.data_list.row(item)
           self.data_list.takeItem(row)
           self.parent_reference.update_window_title()
-  def FlushData():
-    pass
