@@ -8,6 +8,14 @@ from PyQt6.QtWidgets import QInputDialog
 from PyQt6.QtWidgets import QListWidget, QListWidgetItem, QAbstractItemView
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMenuBar, QMenu, QTabWidget, QVBoxLayout, QWidget, QLabel, QLineEdit, QTextEdit, QPushButton, QDialog, QHBoxLayout, QFileDialog
 
+class DragDropListWidget(QListWidget):
+  def __init__(self, parent, parent_reference):
+    super().__init__(parent)
+    self.parent_reference = parent_reference
+  def dropEvent(self, event):
+    super().dropEvent(event)
+    # update the order of the list
+    self.parent_reference.update_var_list_order()
 class RawVariablesTab(QWidget):
   def write_data_full_value(self, text):
     self.data["independent_vars"][self.variable_list.currentItem().text()]["var"]=text
@@ -153,10 +161,16 @@ class RawVariablesTab(QWidget):
     self.add_data_button.clicked.connect(self.add_data_to_multiple_var)
     self.add_data_button.setShortcut("Ctrl+A")
 
-    self.data_list = QListWidget(self.multiple_variable_widget)
+    self.data_list = DragDropListWidget(self.multiple_variable_widget, self)
     self.data_list.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
     self.data_list.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
     self.data_list.customContextMenuRequested.connect(self.show_data_context_menu)
+    # allow drag and drop
+    self.data_list.setDragEnabled(True)
+    self.data_list.setAcceptDrops(True)
+    self.data_list.setDropIndicatorShown(True)
+    self.data_list.setDragDropMode(QAbstractItemView.DragDropMode.InternalMove)
+    self.data_list.setDragDropOverwriteMode(False)
 
     self.multiple_variable_layout.addLayout(self.multiple_var_tolerance_label_container)
     self.multiple_variable_layout.addLayout(self.multiple_var_scale_label_container)
@@ -327,6 +341,21 @@ class RawVariablesTab(QWidget):
       self.variable_type_combobox.setEnabled(False)
       self.variable_type_combobox.setCurrentIndex(-1)
       self.parent_reference.update_window_title()
+
+  def update_var_list_order(self):
+    # Update the order of the var list after dropping
+    current_item = self.variable_list.currentItem()
+    if current_item:
+      variable_name = current_item.text()
+      variable_data = self.data["independent_vars"].get(variable_name, {})
+      if variable_data.get("type") == "multiple":
+        # Update the data list
+        new_order = []
+        for i in range(self.data_list.count()):
+          item = self.data_list.item(i)
+          new_order.append(item.text())
+        variable_data["var"] = new_order
+        self.parent_reference.update_window_title()
 
   def add_data_to_multiple_var(self):
     current_item = self.variable_list.currentItem()
