@@ -302,6 +302,7 @@ class RawVariablesTab(QWidget):
       self.variable_list.takeItem(row)
       # Clear the right panel if the deleted variable was being displayed
       self.right_panel_info.setCurrentIndex(0)
+      self.variable_type_combobox.setEnabled(False)
 
   def add_data_to_multiple_var(self):
     current_item = self.variable_list.currentItem()
@@ -332,7 +333,7 @@ class RawVariablesTab(QWidget):
       if variable_data.get("type") == "multiple":
         selected_items = self.data_list.selectedItems()
         for item in selected_items:
-          data_point = float(item.text())
+          data_point = item.text()
           # Remove the data point from the data
           variable_data["var"].remove(data_point)
           # Remove the data point from the list
