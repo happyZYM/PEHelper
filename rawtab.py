@@ -142,6 +142,7 @@ class RawVariablesTab(QWidget):
     self.multiple_var_system_error_label_container.addWidget(self.multiple_var_system_error_label)
     self.add_data_button = QPushButton("Add Data", self.multiple_variable_widget)
     self.add_data_button.clicked.connect(self.add_data_to_multiple_var)
+    self.add_data_button.setShortcut("Ctrl+A")
 
     self.data_list = QListWidget(self.multiple_variable_widget)
     self.data_list.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
@@ -254,6 +255,7 @@ class RawVariablesTab(QWidget):
     self.variable_list.clear()
     self.right_panel_info.setCurrentIndex(0)
     self.variable_type_combobox.setEnabled(False)
+    self.variable_type_combobox.setCurrentIndex(-1)
     for variable_name in self.data["independent_vars"]:
       print("find a var called", variable_name)
       item = QListWidgetItem(variable_name)
@@ -303,6 +305,7 @@ class RawVariablesTab(QWidget):
       # Clear the right panel if the deleted variable was being displayed
       self.right_panel_info.setCurrentIndex(0)
       self.variable_type_combobox.setEnabled(False)
+      self.variable_type_combobox.setCurrentIndex(-1)
 
   def add_data_to_multiple_var(self):
     current_item = self.variable_list.currentItem()
