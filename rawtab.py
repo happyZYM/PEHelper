@@ -287,10 +287,17 @@ class RawVariablesTab(QWidget):
       item.setText(variable_name)
 
   def show_context_menu(self, position):
+    # Make custom Item and selected Item always the same
+    self.variable_list.clearSelection()
+    item = self.variable_list.itemAt(position)
+    item.setSelected(True)
     menu = QMenu(self)
     delete_action = QAction("Delete", self)
     delete_action.triggered.connect(self.delete_selected_variables)
     menu.addAction(delete_action)
+    change_name_action = QAction("Edit Name", self)
+    change_name_action.triggered.connect(lambda: self.edit_variable_name(self.variable_list.currentItem()))
+    menu.addAction(change_name_action)
     menu.exec(self.variable_list.mapToGlobal(position))
 
   def delete_selected_variables(self):
