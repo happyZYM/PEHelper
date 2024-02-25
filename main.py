@@ -37,6 +37,7 @@ from rawtab import *
 class MainWindow(QMainWindow):
   def __init__(self):
     super().__init__()
+    self.OpeningFile=False
 
     self.setWindowTitle("PEHelper - Physics Experiment Helper")
     self.setWindowIcon(QIcon(os.path.join(basedir,"static/icon.ico")))
@@ -45,6 +46,8 @@ class MainWindow(QMainWindow):
     menubar = self.menuBar()
     
     file_menu = menubar.addMenu("File")
+    new_action = file_menu.addAction("New", self.new_file)  # Add New action
+    new_action.setShortcut("Ctrl+N")  # Set shortcut for New
     open_action = file_menu.addAction("Open", self.open_file)
     open_action.setShortcut("Ctrl+O")
     save_action = file_menu.addAction("Save", self.save_file)
@@ -88,6 +91,39 @@ class MainWindow(QMainWindow):
     central_widget.setLayout(layout)
     self.setCentralWidget(central_widget)
 
+    self.update_window_title()
+
+  def new_file(self):
+    self.FetchInfoFromUI()
+    if self.data != self.data_backup:
+      # Prompt the user to save current work before creating a new file
+      reply = QMessageBox.question(
+        self, 'Save Work', 'Do you want to save your current work before creating a new file?',
+        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No | QMessageBox.StandardButton.Cancel
+      )
+      if reply == QMessageBox.StandardButton.Yes:
+        self.save_file()
+      elif reply == QMessageBox.StandardButton.Cancel:
+        return
+
+    # Reset data and UI to initial state
+    self.data = {
+      "independent_vars": {},
+      "intermediate_vars": [],
+      "dependent_var": {
+          "name": "",
+          "expr": ""
+      },
+      "confidence": 0.95,
+      "accuracy": 20
+    }
+    self.data_backup = copy.deepcopy(self.data)
+    self.current_file_name = ""
+
+    # Update UI with the new data
+    self.update_ui_with_data(self.data)
+    self.update_window_title()
+
   def setup_raw_variables_tab(self):
     self.raw_variables_tab = RawVariablesTab(self, self.data)
   def setup_intermediate_variables_tab(self):
@@ -98,21 +134,29 @@ class MainWindow(QMainWindow):
 
     label_name = QLabel("Dependent Variable's Name:")
     self.input_name = QLineEdit()
+    # Track changes in the input field
+    self.input_name.textChanged.connect(self.update_window_title)
     layout.addWidget(label_name)
     layout.addWidget(self.input_name)
 
     label_expr = QLabel("Expression:")
     self.input_expr = QLineEdit()
+    # Track changes in the input field
+    self.input_expr.textChanged.connect(self.update_window_title)
     layout.addWidget(label_expr)
     layout.addWidget(self.input_expr)
 
     label_confidence = QLabel("Confidence Level:")
     self.input_confidence = QLineEdit("0.95")  # Set default value
+    # Track changes in the input field
+    self.input_confidence.textChanged.connect(self.update_window_title)
     layout.addWidget(label_confidence)
     layout.addWidget(self.input_confidence)
 
     label_accuracy = QLabel("Accuracy:")
     self.input_accuracy = QLineEdit("20")  # Set default value
+    # Track changes in the input field
+    self.input_accuracy.textChanged.connect(self.update_window_title)
     layout.addWidget(label_accuracy)
     layout.addWidget(self.input_accuracy)
 
@@ -154,6 +198,20 @@ class MainWindow(QMainWindow):
     # Update raw variables tab
     self.raw_variables_tab.flush_list(self.data)
 
+  def update_window_title(self):
+    if self.OpeningFile:
+      return
+    self.FetchInfoFromUI()
+    changed=(self.data != self.data_backup)
+    if changed:
+      flag="*"
+    else:
+      flag=""
+    if self.current_file_name:
+      self.setWindowTitle(f"PEHelper - Physics Experiment Helper - {flag}{self.current_file_name}")
+    else:
+      self.setWindowTitle(f"PEHelper - Physics Experiment Helper - {flag}[New Project]")
+
   def start_analysis(self):
     self.FetchInfoFromUI()
     name=self.data['dependent_var']['name']
@@ -193,11 +251,13 @@ class MainWindow(QMainWindow):
     if file_path:
       self.current_file_name = file_path
       with open(file_path, 'rb') as file:
+        self.OpeningFile=True
         new_data = pickle.load(file)
-
-      # Update the UI with the new data
-      self.update_ui_with_data(new_data)
-      self.data_backup=copy.deepcopy(self.data)
+        # Update the UI with the new data
+        self.update_ui_with_data(new_data)
+        self.data_backup=copy.deepcopy(self.data)
+        self.OpeningFile=False
+        self.update_window_title()
 
   def save_file(self):
     file_dialog = QFileDialog()
@@ -208,17 +268,20 @@ class MainWindow(QMainWindow):
     if file_path:
       self.current_file_name=file_path
       with open(file_path, 'wb') as file:
+        print("data stored is",self.data)
         pickle.dump(self.data, file)
         self.data_backup=copy.deepcopy(self.data)
+        self.update_window_title()
 
   def save_as_file(self):
     file_dialog = QFileDialog()
     file_path, _ = file_dialog.getSaveFileName(self, "Save As", "", "Pickle Files (*.pe)")
     if file_path:
-      self.current_file_name=file_path
       with open(file_path, 'wb') as file:
+        self.current_file_name=file_path
         pickle.dump(self.data, file)
         self.data_backup=copy.deepcopy(self.data)
+        self.update_window_title()
 
   def show_about_dialog(self):
     about_dialog = AboutDialog()
