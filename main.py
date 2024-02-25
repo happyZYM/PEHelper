@@ -64,8 +64,8 @@ class MainWindow(QMainWindow):
         "name": "",
         "expr": ""
       },
-      "confidence": 0.95,
-      "accuracy": 20
+      "confidence": "0.95",
+      "accuracy": "20"
     }
     self.data_backup=copy.deepcopy(self.data)
     # self.data = data_demo
@@ -114,8 +114,8 @@ class MainWindow(QMainWindow):
           "name": "",
           "expr": ""
       },
-      "confidence": 0.95,
-      "accuracy": 20
+      "confidence": "0.95",
+      "accuracy": "20"
     }
     self.data_backup = copy.deepcopy(self.data)
     self.current_file_name = ""
@@ -174,8 +174,8 @@ class MainWindow(QMainWindow):
     # Retrieve user inputs in tab 3
     name = self.input_name.text()
     expr = self.input_expr.text()
-    confidence = float(self.input_confidence.text())
-    accuracy = int(self.input_accuracy.text())
+    confidence = self.input_confidence.text()
+    accuracy = self.input_accuracy.text()
     self.data["dependent_var"] = {"name": name, "expr": expr}
     self.data["confidence"] = confidence
     self.data["accuracy"] = accuracy
@@ -199,6 +199,7 @@ class MainWindow(QMainWindow):
     self.raw_variables_tab.flush_list(self.data)
 
   def update_window_title(self):
+    print("updating window title")
     if self.OpeningFile:
       return
     self.FetchInfoFromUI()
