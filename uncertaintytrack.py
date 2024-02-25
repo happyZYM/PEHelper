@@ -3,8 +3,8 @@ from mpmath import mp
 from utils import GetTFactor_Double
 
 def TrackUncertainty(data):
-  confidence_level=data["confidence"]
-  dps=data["accuracy"]
+  confidence_level=mp.mpf(data["confidence"])
+  dps=mp.mpf(data["accuracy"])
   independent_vars=[var for var in data['independent_vars']]
   independent_vars_symbols = symbols(independent_vars)
   independent_vars_symbols_dict = {var: symbols(var) for var in independent_vars}
@@ -48,7 +48,7 @@ def TrackUncertainty(data):
       # check if has field system_error
       if 'system_error' in data['independent_vars'][var]:
         system_error = mp.mpf(data['independent_vars'][var]['system_error'])
-      t=mp.mpf(GetTFactor_Double(len(data['independent_vars'][var]['var'])-1, confidence_level))
+      t=mp.mpf(GetTFactor_Double(len(data['independent_vars'][var]['var'])-1, mp.mpf(confidence_level)))
       sum=mp.mpf(0)
       for val in data['independent_vars'][var]['var']:
         sum+=(mp.mpf(val) - system_error) * scale
