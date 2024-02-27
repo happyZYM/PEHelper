@@ -8,6 +8,10 @@
 - [ ] 多因变量
 - [ ] 常见的数据拟合
 
+仓库地址：
+- GitHub: <https://github.com/happyZYM/PEHelper/>
+- OneDev: <https://dev.zymsite.ink/Academic/PEHelper>
+
 # 使用方法
 ![pic](https://cloud.zymsite.ink/f/mB4cK/example.gif)
 ## 下载
