@@ -16,7 +16,7 @@
 ![pic](https://cloud.zymsite.ink/f/mB4cK/example.gif)
 ## 下载
 ### Windows端
-在<https://github.com/happyZYM/PEHelper/releases/>页面下载对应版本的`PEHelper.zip`，解压后即可使用（百度网盘镜像：<https://pan.baidu.com/s/1b-4j-qWFRVSgIh_ZyZvAAA?pwd=sz0q>）
+在<https://github.com/happyZYM/PEHelper/releases/>页面下载对应版本的`PEHelper.zip`，解压后即可使用
 ### 其他平台
 在<https://github.com/happyZYM/PEHelper/releases/>页面下载对应版本的源码，安装`PyQt6`、`SymPy`、`Scipy`、`mpmath`等依赖项即可使用
 
