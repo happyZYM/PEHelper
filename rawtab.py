@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import QComboBox
 from PyQt6.QtWidgets import QInputDialog
 from PyQt6.QtWidgets import QListWidget, QListWidgetItem, QAbstractItemView
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMenuBar, QMenu, QTabWidget, QVBoxLayout, QWidget, QLabel, QLineEdit, QTextEdit, QPushButton, QDialog, QHBoxLayout, QFileDialog
+from PyQt6.QtGui import QKeySequence, QShortcut
 
 class DragDropListWidget(QListWidget):
   def __init__(self, parent, parent_reference):
@@ -159,7 +160,8 @@ class RawVariablesTab(QWidget):
     self.multiple_var_system_error_label_container.addWidget(self.multiple_var_system_error_label)
     self.add_data_button = QPushButton("Add Data", self.multiple_variable_widget)
     self.add_data_button.clicked.connect(self.add_data_to_multiple_var)
-    self.add_data_button.setShortcut("Ctrl+A")
+    shortcut = QShortcut(QKeySequence("Ctrl+A"), self)
+    shortcut.activated.connect(self.add_data_to_multiple_var)
 
     self.data_list = DragDropListWidget(self.multiple_variable_widget, self)
     self.data_list.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
@@ -212,20 +214,20 @@ class RawVariablesTab(QWidget):
       if actually_changed:
         self.parent_reference.update_window_title()
         if new_type == "full":
-          variable_data["var"] = 0
-          variable_data["uncertainty"] = 0
+          variable_data["var"] = "0"
+          variable_data["uncertainty"] = "0"
           self.show_full_variable_details(variable_data)
         elif new_type == "single":
-          variable_data["var"] = 0
-          variable_data["tolerance"] = 0
-          variable_data["scale"] = 1
-          variable_data["system_error"] = 0
+          variable_data["var"] = "0"
+          variable_data["tolerance"] = "0"
+          variable_data["scale"] = "1"
+          variable_data["system_error"] = "0"
           self.show_single_variable_details(variable_data)
         elif new_type == "multiple":
           variable_data["var"] = []
-          variable_data["tolerance"] = 0
-          variable_data["scale"] = 1
-          variable_data["system_error"] = 0
+          variable_data["tolerance"] = "0"
+          variable_data["scale"] = "1"
+          variable_data["system_error"] = "0"
           self.show_multiple_variable_details(variable_data)
   def show_variable_details(self, item):
     # clear previous selection

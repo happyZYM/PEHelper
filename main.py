@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import sys, os
 import pickle
 import copy
@@ -23,7 +24,7 @@ class AboutDialog(QDialog):
 
     layout = QVBoxLayout()
 
-    text_label = QLabel("<h1>PEHelper</h1><h2>v0.3.1</h2>This is a program designed for basic physics experiment data analysis, written by happyZYM.\nVisit the repository:")
+    text_label = QLabel("<h1>PEHelper</h1><h2>v0.3.2</h2>This is a program designed for basic physics experiment data analysis, written by happyZYM.\nVisit the repository:")
     layout.addWidget(text_label)
 
     link_label = QLabel('<a href="https://dev.zymsite.ink/Academic/PEHelper">https://dev.zymsite.ink/Academic/PEHelper</a>')
